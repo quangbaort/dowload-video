@@ -1,26 +1,18 @@
 // window send request to popup
-function countElem() {
-    var num =  $('a').length
-    return num
-}
-function changeElem() {
-    $("a").each(function (o, elt) {
-        var newElt = $("<div class='p'/>");
-        Array.prototype.slice.call(elt.attributes).forEach(function(a) {
-          newElt.attr(a.name, a.value);
-        });
-        $(elt).wrapInner(newElt).children(0).unwrap();
-    });
+function getURlVideo() {
+    var urlVideo = $('video').map(function() {
+        return this.src
+    }).get()
+    return urlVideo
 }
 chrome.runtime.onMessage.addListener(function(rq ,  sender , sendResponse) {
-    //code 
-    // send Response to popup 
+    //code
+    // send Response to popup
+    var videos = getURlVideo();
     if(rq.key == "getElem"){
-        var num  = countElem();
-        sendResponse({num : num})
+        sendResponse({videos : videos})
     }
-    if(rq.key == "changeElem"){
-        changeElem()
-        sendResponse({change : 1})
+    if(rq.key == "downloadVideo"){
+        sendResponse({isDownload : true, videos, urlVideo: window.location.href})
     }
 })
